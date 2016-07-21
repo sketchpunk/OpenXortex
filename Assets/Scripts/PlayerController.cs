@@ -45,11 +45,19 @@ public class PlayerController : CharController {
 	#region Misc
 	private void FireWeapon(){
 		if( (fireRateCounter -= Time.deltaTime) <= 0){
+			ProjectileManager.Instance.Fire(ProjectilePrefab
+				,transform.position+(Vector3.forward*1.1f)
+				,this.transform.rotation
+				,Vector3.forward*fireSpeed
+				,3f,fireStrength,targetLayer);
+
+			/*
 			Projectile.CreateNew(ProjectilePrefab
 				,transform.position+(Vector3.forward*1.1f)
 				,this.transform.rotation
 				,Vector3.forward*fireSpeed
 				,3f,fireStrength,targetLayer);
+			*/
 
 			fireRateCounter = fireRate;
 		}

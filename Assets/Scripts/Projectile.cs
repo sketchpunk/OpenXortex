@@ -9,36 +9,77 @@ public class Projectile : MonoBehaviour {
 	public int targetLayer = 9;
 	public float lifeSpan = 3f;
 	public float damageStrength = 50f;
+
+	private Rigidbody mRBody;
+	private Projectile mProj;
+	private IEnumerator mCoroutine = null;
 	#endregion
 
 	#region Static methods
-	public static GameObject CreateNew(GameObject prefab, Vector3 pos, Quaternion rot, Vector3 velocity,float lifeSpan, float strength, int targetLayer){
-		GameObject go = (GameObject)Instantiate(prefab,pos,rot);
+	public static Projectile CreateNew(GameObject prefab){
+		GameObject go = (GameObject)Instantiate(prefab);
+		return go.GetComponent<Projectile>();
+	}
 
-		Rigidbody rb = go.GetComponent<Rigidbody>();
-		rb.velocity = velocity;
+	public static Projectile CreateNew(GameObject prefab, Vector3 pos, Quaternion rot, Vector3 velocity,float lifeSpan, float strength, int targetLayer){
+		GameObject go = (GameObject)Instantiate(prefab);
 
 		Projectile proj = go.GetComponent<Projectile>();
-		proj.targetLayer = targetLayer;
-		proj.lifeSpan = lifeSpan;
-		proj.damageStrength = strength;
+		proj.Reset(pos,rot,velocity,lifeSpan,strength,targetLayer);
 
-		return go;
+		return proj;
 	}
 	#endregion
 
 	#region Behavior Events
-	void Start (){ Destroy(gameObject,lifeSpan); }
+	void Awake(){
+		mRBody = GetComponent<Rigidbody>();
+		mProj = GetComponent<Projectile>();
+	}
+
+	void Start (){ 
+		//Destroy(gameObject,lifeSpan);
+	}
 
 	void OnTriggerEnter(Collider c){
-		if(c.gameObject.layer == LAYER_PROJECTILE) Destroy(this.gameObject);
-		else if(c.gameObject.layer == targetLayer){
-			CharController controller = c.gameObject.GetComponent<CharController>();
-			if(controller != null) controller.ApplyDamage(damageStrength);
-			Destroy(this.gameObject);
-		}
+		if(c.gameObject.layer == LAYER_PROJECTILE) onHit(null);
+		else if(c.gameObject.layer == targetLayer) onHit(c.gameObject.GetComponent<CharController>());
 
 		Debug.Log("Projectile trigger with " + c.gameObject.name + " " + c.gameObject.layer);
+	}
+	#endregion
+
+	#region Get/Set
+	public bool IsEnabled(){ return this.gameObject.activeSelf; }
+	#endregion
+
+	#region Manage Projectile Life
+	public void Reset(Vector3 pos, Quaternion rot, Vector3 velocity,float lifeSpan, float strength, int targetLayer){
+		transform.position = pos;
+		transform.rotation = rot;
+
+		mRBody.velocity = velocity;
+
+		mProj.targetLayer = targetLayer;
+		mProj.lifeSpan = lifeSpan;
+		mProj.damageStrength = strength;
+
+		this.gameObject.SetActive(true);
+		mCoroutine = AutoDisable(lifeSpan);
+		StartCoroutine(mCoroutine);
+	}
+
+	private void onHit(CharController cc){
+		if(cc != null) cc.ApplyDamage(damageStrength);
+
+		if(mCoroutine != null){ StopCoroutine(mCoroutine); mCoroutine = null; }
+		this.gameObject.SetActive(false);
+	}
+
+	private IEnumerator AutoDisable(float lifeSpan){
+		yield return new WaitForSeconds(lifeSpan);
+		this.gameObject.SetActive(false);
+		mCoroutine = null;
 	}
 	#endregion
 }
