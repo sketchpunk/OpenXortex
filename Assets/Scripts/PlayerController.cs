@@ -10,10 +10,14 @@ public class PlayerController : CharController {
 	private float fireRateCounter = 0;
 	private float fireSpeed = 4f;
 	private int targetLayer = 9;
+
+	private LaserSight mLaser;
 	#endregion
 
 	#region Behavior Events
-	public override void Start (){}
+	public override void Start (){
+		mLaser = new LaserSight(this.gameObject);
+	}
 	
 	// Update is called once per frame
 	void Update (){
@@ -29,6 +33,8 @@ public class PlayerController : CharController {
 		//Handle Attacking
 		if(Input.GetButton("Fire1")) FireWeapon();
 		if(Input.GetButtonUp("Fire1")) fireRateCounter = 0;
+
+		mLaser.Update();
 	}
 	#endregion
 
