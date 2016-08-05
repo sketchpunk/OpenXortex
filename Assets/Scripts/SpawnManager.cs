@@ -12,7 +12,7 @@ public class SpawnManager : MonoBehaviour {
 		mPosition = GameObject.FindObjectsOfType<SpawnPoint>();
 
 		//for(int i = 0; i < mPosition.Length; i++){ SpawnAt(i); }
-		RandomSpawn();
+		//RandomSpawn();
 	}
 	#endregion
 
