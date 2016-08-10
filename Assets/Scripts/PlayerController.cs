@@ -14,12 +14,14 @@ public class PlayerController : CharController {
 	private int targetLayer = 9;
 
 	private LaserSight mLaser;
+	private static PlayerController mInstance = null;
 	#endregion
 
 	#region Behavior Events
 	public override void Start (){
 		mLaser = new LaserSight(this.gameObject);
 		ViveControllerMan.TriggerState += new ViveTriggerEventHandler(this.OnControllerTrigger);
+		mInstance = this;
 	}
 	
 	// Update is called once per frame
@@ -53,6 +55,8 @@ public class PlayerController : CharController {
 				break;
 		}
 	}
+
+	public static GameObject Instance(){ return mInstance.gameObject; }
 
 	#region CharController
 	public override bool ApplyDamage(float damage){ return false; }

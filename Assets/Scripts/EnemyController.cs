@@ -4,14 +4,12 @@ using System.Collections;
 public class EnemyController : CharController{
 	#region Vars
 	public GameObject Target;
-	public bool TrackEnabled = true;
+	private bool TrackEnabled = true;
 
 	//private Rigidbody mRBody;
-	private float mRotationSpeed = 0.5f;
+	private float mRotationSpeed = 1f;
 	private float mMoveSpeed = 0.5f;
-	private float mStopDistance = 2f;
-	//public const int LAYER_ENEMY = 9;
-	//private int targetLayer = 10;
+	private float mStopDistance = 0.22f;
 	#endregion
 
 	#region Behavior Events
@@ -23,6 +21,7 @@ public class EnemyController : CharController{
 			float dist = Vector3.Distance(this.transform.position,Target.transform.position);
 			Quaternion lookRotation = Quaternion.LookRotation(Target.transform.position - this.transform.position);
 
+			//TODO Try to figure out the math that the closer you are to the target, the faster the rotation.
 			if(!lookRotation.Equals(this.transform.rotation)){
 				this.transform.rotation = Quaternion.Slerp(this.transform.rotation,lookRotation, mRotationSpeed*Time.deltaTime);
 			}
@@ -42,6 +41,7 @@ public class EnemyController : CharController{
 		Debug.Log("Apply Damage to Enemy Ship " + damage);
 
 		if( (this.mHealth -= damage) <= 0){
+			this.gameObject.SendMessageUpwards("OnEnemyDestroyed");
 			Destroy(this.gameObject);
 			return true;
 		}
