@@ -12,7 +12,7 @@ public class SpawnManager : MonoBehaviour {
 	#region Behavior Events
 	public void Start (){
 		mPosition = GameObject.FindObjectsOfType<SpawnPoint>();
-		Debug.Log(mPosition.Length);
+		//Debug.Log(mPosition.Length);
 		//for(int i = 0; i < mPosition.Length; i++){ SpawnAt(i); }
 		//RandomSpawn();
 	}
@@ -25,8 +25,6 @@ public class SpawnManager : MonoBehaviour {
 
 		var go = (GameObject)Instantiate(mPrefab,pos,rot);
 		go.transform.parent = this.transform;
-
-		go.GetComponent<EnemyController>().Target = PlayerController.Instance();
 
 		return go;
 	}

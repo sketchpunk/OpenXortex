@@ -2,5 +2,5 @@
 using System.Collections;
 
 public interface ICharacter{
-    void ApplyDamage(float points);
+    bool ApplyDamage(float points);
 }

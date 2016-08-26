@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EnemyController : CharController{
+public class EnemyControllerX : CharController{
 	#region Vars
 	public GameObject Target;
 	private bool TrackEnabled = true;

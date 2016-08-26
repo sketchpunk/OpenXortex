@@ -37,13 +37,13 @@ public class Projectile : MonoBehaviour {
 		mProj = GetComponent<Projectile>();
 	}
 
-	void Start (){ 
+	void Start(){ 
 		//Destroy(gameObject,lifeSpan);
 	}
 
 	void OnTriggerEnter(Collider c){
 		if(c.gameObject.layer == LAYER_PROJECTILE) onHit(null);
-		else if(c.gameObject.layer == targetLayer) onHit(c.gameObject.GetComponent<CharController>());
+		else if(c.gameObject.layer == targetLayer) onHit(c.gameObject.GetComponent<ICharacter>());
 
 		Debug.Log("Projectile trigger with " + c.gameObject.name + " " + c.gameObject.layer);
 	}
@@ -69,7 +69,7 @@ public class Projectile : MonoBehaviour {
 		StartCoroutine(mCoroutine);
 	}
 
-	private void onHit(CharController cc){
+	private void onHit(ICharacter cc){
 		if(cc != null) cc.ApplyDamage(damageStrength);
 
 		if(mCoroutine != null){ StopCoroutine(mCoroutine); mCoroutine = null; }

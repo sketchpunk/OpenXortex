@@ -6,7 +6,6 @@ public class CharController : MonoBehaviour {
 
 
 	public virtual void Start () {
-		Debug.Log("Start Character");
 	}
 
 	public virtual bool ApplyDamage(float damage){ return false; }

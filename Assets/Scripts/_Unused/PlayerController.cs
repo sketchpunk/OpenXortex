@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using SP.VR;
 
-public class PlayerController : CharController {
+public class PlayerControllerX : CharController {
 	#region Vars
 	public GameObject ProjectilePrefab;
 	private float speedFactor = 0.1f;
@@ -13,15 +14,20 @@ public class PlayerController : CharController {
 	private float fireSpeed = 4f;
 	private int targetLayer = 9;
 
-	private LaserSight mLaser;
-	private static PlayerController mInstance = null;
+	private SP.Effects.LaserSight mLaser;
+	private static PlayerControllerX mInstance = null;
 	#endregion
 
 	#region Behavior Events
-	public override void Start (){
-		mLaser = new LaserSight(this.gameObject);
-		ViveControllerMan.TriggerState += new ViveTriggerEventHandler(this.OnControllerTrigger);
+	void Awake(){
 		mInstance = this;
+	}
+
+	public override void Start (){
+		//mLaser = new LaserSight(this.gameObject);
+		ViveControllerMan.TriggerState += new ViveTriggerEventHandler(this.OnControllerTrigger);
+
+		Debug.Log("Player Start");
 	}
 	
 	// Update is called once per frame
@@ -39,7 +45,7 @@ public class PlayerController : CharController {
 		if(mIsFiring || Input.GetButton("Fire1")) FireWeapon();
 		if(Input.GetButtonUp("Fire1")) fireRateCounter = 0;
 
-		mLaser.Update();
+		//mLaser.Update();
 	}
 	#endregion
 
