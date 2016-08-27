@@ -1,28 +1,45 @@
 ﻿using UnityEngine;
 using System.Collections;
+using SP.Movement;
+
+//http://docs.unity3d.com/ScriptReference/Mathf.SmoothDamp.html
+//http://gamedev.stackexchange.com/questions/55725/move-object-to-position-using-velocity
+//http://answers.unity3d.com/questions/181969/speed-based-on-distance.html
+
 
 [CreateAssetMenu (menuName="Xortex/Enemy Tracker")]
 public class EnemyTrackerObj : EnemyObj{
+	#region Public Properties
+	public float SlowDistance = 0.7f;
+	public float RotationSpeed = 1f;
+	public float MaxSpeed = 0.5f;
+	public float SpeedUpInc = 0.4f;
+	public float SpeedDownInc = 0.3f;
+	#endregion
+
+	#region Private vars
 	private Transform mTrans;
 	private Rigidbody mRBody;
-
-	//public static EnemyTrackerObj Create(GameObject go){
-	//	var obj = ScriptableObject.CreateInstance<EnemyTrackerObj>();
-	//	obj.Init(go);
-	//	return obj;
-	//}
-
-	//private Rigidbody mRBody;
+	private SpaceTracker mTracker;
 	private bool TrackEnabled = true;
-	public float RotationSpeed = 1f;
-	public float MoveSpeed = 0.5f;
-	public float StopDistance = 0.22f;
-	public float SlowDistance = 0.4f;
+	#endregion
 
+	#region Inits / Setter / Getters
 	public override void Init(Transform t){
 		mTrans = t;
 		mRBody = mTrans.gameObject.GetComponent<Rigidbody>();
+		mTracker = new SpaceTracker(t.gameObject,null);
+		/* TODO, FIX Drone Object in editor with new default values.
+		mTracker.SlowDistance = SlowDistance;
+		mTracker.RotationSpeed = RotationSpeed;
+		mTracker.MaxSpeed = MaxSpeed;
+		mTracker.SpeedUpInc = SpeedUpInc;
+		mTracker.SpeedDownInc = SpeedDownInc;
+		*/
 	}
+
+	public override void SetTarget(GameObject target){ mTracker.Target = target; }
+	#endregion
 
 	public override bool ApplyDamage(float damage){
 		Debug.Log("Apply Damage to Enemy Ship " + damage);
@@ -35,28 +52,5 @@ public class EnemyTrackerObj : EnemyObj{
 		return false;
 	}
 
-	public override void Update() {
-		if(!TrackEnabled || Target == null) return;
-
-		float dist = Vector3.Distance(mTrans.position,Target.transform.position);
-		Quaternion lookRotation = Quaternion.LookRotation(Target.transform.position - mTrans.position);
-
-		//TODO Try to figure out the math that the closer you are to the target, the faster the rotation.
-		if(!lookRotation.Equals(mTrans.rotation)){
-			mTrans.rotation = Quaternion.Slerp(mTrans.rotation,lookRotation, RotationSpeed*Time.deltaTime);
-		}
-
-		//if(dist > StopDistance ) mTrans.position += mTrans.forward * MoveSpeed * Time.deltaTime;
-		if(dist > StopDistance){
-			//if(dist <= SlowDistance ) Debug.Log( (dist-StopDistance)/(SlowDistance-StopDistance) );
-			mRBody.velocity = mTrans.forward * MoveSpeed * ((dist > SlowDistance)? 1f : Mathf.Max((dist-StopDistance)/(SlowDistance-StopDistance),0.3f) );
-			mRBody.angularVelocity = Vector3.zero; 	 //TODO When drone bumps into something it has a new angular velocity, Add code to fix it with a lerp or something so it can fly straight again.
-		}else mRBody.velocity = Vector3.zero;
-
-		//this.transform.rotation.Sl
-		//Quaternion.AngleAxis (Input.GetAxis("Mouse X") * turnSpeed, Vector3.up) * offsetX;
-	    //Quaternion.AngleAxis (Input.GetAxis("Mouse Y") * turnSpeed, Vector3.right) * offsetY;
-		//this.transform.LookAt(Target.transform);
-		//mRBody.AddForce(Vector3.forward);
-	}
+	public override void Update(){ if(TrackEnabled) mTracker.onUpdate(); }
 }

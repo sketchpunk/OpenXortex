@@ -6,7 +6,7 @@ public class EnemyCtrl : MonoBehaviour, ICharacter{
 
 	void Start(){
 		EnemyType.Init(this.transform);
-		EnemyType.Target = PlayerCtrl.Instance().gameObject;
+		EnemyType.SetTarget(PlayerCtrl.Instance().gameObject);
 	}
 
 	void Update(){
