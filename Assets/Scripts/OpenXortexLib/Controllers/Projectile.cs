@@ -2,6 +2,7 @@
 using System.Collections;
 
 //http://answers.unity3d.com/questions/914945/what-replaces-the-glow-effect-in-unity-5.html
+//http://answers.unity3d.com/questions/694692/randomrange-vector3.html //For sphere randomness, To do a random hover. Make a sin up/down hover too.
 
 public class Projectile : MonoBehaviour {
 	#region Vars

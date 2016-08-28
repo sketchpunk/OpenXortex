@@ -21,7 +21,7 @@ public class EnemyTrackerObj : EnemyObj{
 	private Transform mTrans;
 	private Rigidbody mRBody;
 	private SpaceTracker mTracker;
-	private bool TrackEnabled = true;
+	private bool TrackEnabled = false;
 	#endregion
 
 	#region Inits / Setter / Getters
@@ -52,5 +52,7 @@ public class EnemyTrackerObj : EnemyObj{
 		return false;
 	}
 
-	public override void Update(){ if(TrackEnabled) mTracker.onUpdate(); }
+	public override void Update(){
+		if(TrackEnabled) mTracker.onUpdate();
+	}
 }

@@ -152,7 +152,7 @@ namespace SP.VR{
 		#endregion
 
 		#region Deal with Controller modal
-		public static bool attachToController(int pos,string name,bool doRotate,Transform item){
+		public static bool attachToController(int pos,string name,bool doRotate,Vector3 locPosition,Transform item){
 			SteamVR_ControllerManager o = GameObject.FindObjectOfType<SteamVR_ControllerManager>();
 			GameObject controller = (pos == 0)? o.right : o.left;
 			Transform child, modal = controller.transform.GetChild(0);
@@ -161,7 +161,9 @@ namespace SP.VR{
 				child = modal.GetChild(i);
 				if(child.name.Equals(name)){
 					item.parent = child.GetChild(0); //The attach object is the only child.
+					if(locPosition != null) item.localPosition = locPosition; //Helps to set position before rotation to get things aligned right.
 					if(doRotate) item.Rotate(new Vector3(56.928f,0f,0f)); //Line up the model to the top of the controller.
+
 					return true;
 				}
 			}

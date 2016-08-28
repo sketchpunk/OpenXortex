@@ -11,6 +11,7 @@ public class PlayerCtrl : MonoBehaviour {
 	private Weapon mWeapon = null;
 	private LaserSight mLaser;
 	public GameObject ProjectilePrefab;
+	public bool AutoAttachToVive = true;
 
 	private const float weaponForwardOffset	= 0.13f;
 	private const float weaponTopOffset		= -0.015f;
@@ -28,8 +29,10 @@ public class PlayerCtrl : MonoBehaviour {
 		ViveControllerMan.TriggerState += new ViveTriggerEventHandler(this.OnControllerTrigger);
 
 		//Parent gameobject to the Vive Controller.
-		this.transform.position += new Vector3(0f,0f,0.05f); //Move the object a little so it lines up better with the controller
-		ViveControllerMan.attachToController(0,"base",true,this.transform);	//Make this model a child to a section of the controller.
+		if(AutoAttachToVive){
+			//this.transform.position += new Vector3(0f,0f,0.05f); //Move the object a little so it lines up better with the controller
+			ViveControllerMan.attachToController(0,"base",true,new Vector3(0f,0.024f,-0.215f),this.transform);	//Make this model a child to a section of the controller.
+		}
 	}
 
 	void Update(){
