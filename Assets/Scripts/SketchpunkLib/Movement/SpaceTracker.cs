@@ -8,6 +8,7 @@ namespace SP.Movement{
 		public float MaxSpeed = 0.5f;
 		public float SpeedUpInc = 0.4f;
 		public float SpeedDownInc = 0.3f;
+		public bool InView = false;
 
 		private Transform mTrans;
 		private Rigidbody mRBody;
@@ -18,16 +19,24 @@ namespace SP.Movement{
 			mRBody = moveObj.GetComponent<Rigidbody>();
 		}
 
+
 		public void onUpdate(){
 			float dist = Vector3.Distance(mTrans.position,Target.transform.position);
-			Quaternion lookRotation = Quaternion.LookRotation(Target.transform.position - mTrans.position);
+			Quaternion lookRotation = Quaternion.LookRotation(Target.transform.position - mTrans.position,mTrans.up);
 			bool isMove = false;
+			//bool isClose = IsClose(lookRotation,mTrans.rotation,0.01f);
+			float rotAngle = Quaternion.Angle(mTrans.rotation,lookRotation);
+			//Debug.Log(rotAngle);
 
 			//TODO Try to figure out the math that the closer you are to the target, the faster the rotation.
-			if(!lookRotation.Equals(mTrans.rotation)){
+			if(rotAngle > 0.5f){ //lookRotation.Equals(mTrans.rotation
 				mTrans.rotation = Quaternion.Slerp(mTrans.rotation,lookRotation, RotationSpeed*Time.deltaTime);
 				isMove = true; //Forward changes based on rotation, so need to change velocity with need heading
-			}
+				//Debug.Log("no in view");
+				//Debug.Log( Mathf.Abs(mTrans.rotation.x - lookRotation.x) + " " +  Mathf.Abs(mTrans.rotation.y - lookRotation.y) + " " +  Mathf.Abs(mTrans.rotation.z - lookRotation.z) +  " " +  Mathf.Abs(mTrans.rotation.w - lookRotation.w));
+			}else mTrans.rotation = lookRotation;
+
+			InView = (rotAngle <= 10);
 
 			//At max range, only increase speed if it hasn't reached its fastest speed.
 			if(dist > SlowDistance && mSpeed < MaxSpeed){

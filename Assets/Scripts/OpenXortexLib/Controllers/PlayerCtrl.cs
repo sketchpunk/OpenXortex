@@ -24,15 +24,15 @@ public class PlayerCtrl : MonoBehaviour {
 
 	void Start(){
 		Debug.Log("PlayerCtrl Start");
+
 		mLaser	= new LaserSight(this.gameObject, weaponForwardOffset, weaponTopOffset);
 		mWeapon	= new Weapon(this.transform, ProjectilePrefab, weaponForwardOffset, weaponTopOffset);
+		mWeapon.targetLayer = Consts.LAYER_ENEMIES;
+
 		ViveControllerMan.TriggerState += new ViveTriggerEventHandler(this.OnControllerTrigger);
 
 		//Parent gameobject to the Vive Controller.
-		if(AutoAttachToVive){
-			//this.transform.position += new Vector3(0f,0f,0.05f); //Move the object a little so it lines up better with the controller
-			ViveControllerMan.attachToController(0,"base",true,new Vector3(0f,0.024f,-0.215f),this.transform);	//Make this model a child to a section of the controller.
-		}
+		if(AutoAttachToVive) ViveControllerMan.attachToController(0,"base",true,new Vector3(0f,0.024f,-0.215f),this.transform);
 	}
 
 	void Update(){

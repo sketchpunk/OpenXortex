@@ -12,7 +12,7 @@ namespace SP.Attacking{
 		#endregion
 
 		#region Properties / Constructor
-		public int targetLayer = 9;
+		public int targetLayer = 0;
 
 		public float lifeSpan = 3f;
 		public float fireStrength = 50f;
